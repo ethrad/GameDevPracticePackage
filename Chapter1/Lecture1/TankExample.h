@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Game2D.h"
+using namespace std;
 
 namespace jm
 {
@@ -51,8 +52,10 @@ namespace jm
 	public:
 		MyTank tank;
 
-		MyBullet *bullet = nullptr;
+		vector<MyBullet*> bullets;
+
 		//TODO: allow multiple bullets
+		// 총알 여러 개 일 때 메모리 누수 해결
 		//TODO: delete bullets when they go out of the screen
 
 	public:
@@ -62,7 +65,7 @@ namespace jm
 
 		~TankExample()
 		{
-			if(bullet != nullptr) delete bullet;
+			//if(bullet != nullptr) delete bullet;
 		}
 
 		void update() override
@@ -76,18 +79,29 @@ namespace jm
 			// shoot a cannon ball
 			if (isKeyPressedAndReleased(GLFW_KEY_SPACE))
 			{
-				bullet = new MyBullet;
+				bullets.push_back(new MyBullet);
+
+				MyBullet *bullet = bullets.back();
 				bullet->center = tank.center;
 				bullet->center.x += 0.2f;
 				bullet->center.y += 0.1f;
 				bullet->velocity = vec2(2.0f, 0.0f);
 			}
 
-			if (bullet != nullptr) bullet->update(getTimeStep());
-
 			// rendering
 			tank.draw();
-			if (bullet != nullptr) bullet->draw();
+			
+			if (!bullets.empty()) {
+				if (bullets[0]->center.x > 2) {
+					delete bullets[0];
+					bullets.erase(bullets.begin());
+				}
+
+				for (int i = 0; i < bullets.size(); i++) {
+					bullets[i]->update(getTimeStep());
+					bullets[i]->draw();
+				}
+			}
 		}
 	};
 }
