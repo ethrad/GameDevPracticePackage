@@ -6,12 +6,21 @@ namespace jm {
 	public:
 		vec2 pos;
 		RGB color;
-		float size;
 
-		void init(const RGB& _color, const vec2& _pos, const float& _size) {
+		void init(const RGB& _color, const vec2& _pos) {
 			color = _color;
 			pos = _pos;
-			size = _size;
 		}
+
+		void draw() {
+			beginTransformation();
+			{
+				translate(pos);
+				drawGeometry();
+			}
+			endTransformation();
+		}
+
+		virtual void drawGeometry() const = 0;
 	};
 }

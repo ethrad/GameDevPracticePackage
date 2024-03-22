@@ -1,21 +1,20 @@
 #pragma once
-#include "Game2D.h"
+#include "GeometricObject.h"
 
 namespace jm {
-	class Box {
+	class Box : public GeometricObject {
 	public:
-		vec2 pos = vec2{ 0.5f, 0.0f };
-		RGB color = Colors::blue;
-		float width = 0.25f;
-		float height = 0.3f;
+		float width, height;
 
-		void draw() {
-			beginTransformation();
-			{
-				translate(vec2{ 0.5f, 0.0f });
-				drawFilledBox(color, width, height);
-			}
-			endTransformation();
+		void init(const RGB& _color, const vec2& _pos, const float& _width, const float& _height) {
+			GeometricObject::init(_color, _pos);
+			width = _width;
+			height = _height;
+		}
+
+		void drawGeometry() const override
+		{
+			drawFilledBox(GeometricObject::color, this->width, this->height);
 		}
 	};
 }
